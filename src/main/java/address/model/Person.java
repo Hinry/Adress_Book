@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import address.util.LocalDateAdapter;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -23,8 +22,9 @@ public class Person {
 
     private final StringProperty firstName;
     private final StringProperty lastName;
+    private final StringProperty phoneNumber;
     private final StringProperty street;
-    private final IntegerProperty postalCode;
+    private final StringProperty mail;
     private final StringProperty city;
     private final ObjectProperty<LocalDate> birthday;
 
@@ -42,10 +42,10 @@ public class Person {
     public Person(String firstName, String lastName) {
         this.firstName = new SimpleStringProperty(firstName);
         this.lastName = new SimpleStringProperty(lastName);
-
+        this.phoneNumber = new SimpleStringProperty("+38(050)000 00 00");
         // Какие-то фиктивные начальные данные для удобства тестирования.
         this.street = new SimpleStringProperty("какая-то улица");
-        this.postalCode = new SimpleIntegerProperty(1234);
+        this.mail = new SimpleStringProperty("example@mail.com");
         this.city = new SimpleStringProperty("какой-то город");
         this.birthday = new SimpleObjectProperty<LocalDate>(LocalDate.of(1999, 2, 21));
     }
@@ -86,16 +86,16 @@ public class Person {
         return street;
     }
 
-    public int getPostalCode() {
-        return postalCode.get();
+    public String getMail() {
+        return mail.get();
     }
 
-    public void setPostalCode(int postalCode) {
-        this.postalCode.set(postalCode);
+    public void setMail(String mail) {
+        this.mail.set(mail);
     }
 
-    public IntegerProperty postalCodeProperty() {
-        return postalCode;
+    public StringProperty mailProperty() {
+        return mail;
     }
 
     public String getCity() {
@@ -121,5 +121,17 @@ public class Person {
 
     public ObjectProperty<LocalDate> birthdayProperty() {
         return birthday;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber.get();
+    }
+
+    public StringProperty phoneNumberProperty() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber.set(phoneNumber);
     }
 }

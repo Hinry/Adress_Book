@@ -4,6 +4,9 @@ package address.view;
  * Created by mrhri on 16.11.2016.
  */
 import address.util.DateUtil;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import address.MainApp;
@@ -24,14 +27,18 @@ public class PersonOverviewController {
     @FXML
     private Label streetLabel;
     @FXML
-    private Label postalCodeLabel;
+    private Label mailLabel;
     @FXML
     private Label cityLabel;
     @FXML
+    private Label phoneNumberLabel;
+    @FXML
     private Label birthdayLabel;
+    @FXML
+    private Label countContacts;
 
     // Ссылка на главное приложение.
-    private MainApp mainApp;
+    public MainApp mainApp = new MainApp();
 
     /**
      * Конструктор.
@@ -44,6 +51,8 @@ public class PersonOverviewController {
      * Инициализация класса-контроллера. Этот метод вызывается автоматически
      * после того, как fxml-файл будет загружен.
      */
+
+
     @FXML
     private void initialize() {
         // Инициализация таблицы адресатов с двумя столбцами.
@@ -57,6 +66,7 @@ public class PersonOverviewController {
         // дополнительную информацию об адресате.
         personTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showPersonDetails(newValue));
+
     }
 
     /**
@@ -66,9 +76,15 @@ public class PersonOverviewController {
      */
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
-
+        countContacts.setText(""+mainApp.getPersonData().size());
         // Добавление в таблицу данных из наблюдаемого списка
         personTable.setItems(mainApp.getPersonData());
+        mainApp.getPersonData().addListener(new ListChangeListener<Person>() {
+            @Override
+            public void onChanged(Change<? extends Person> c) {
+                countContacts.setText(""+mainApp.getPersonData().size());
+            }
+        });
     }
 
 
@@ -83,8 +99,9 @@ public class PersonOverviewController {
             // Заполняем метки информацией из объекта person.
             firstNameLabel.setText(person.getFirstName());
             lastNameLabel.setText(person.getLastName());
+            phoneNumberLabel.setText(person.getPhoneNumber());
             streetLabel.setText(person.getStreet());
-            postalCodeLabel.setText(Integer.toString(person.getPostalCode()));
+            mailLabel.setText(person.getMail());
             cityLabel.setText(person.getCity());
             birthdayLabel.setText(DateUtil.format(person.getBirthday()));
             // birthdayLabel.setText(...);
@@ -92,8 +109,9 @@ public class PersonOverviewController {
             // Если Person = null, то убираем весь текст.
             firstNameLabel.setText("");
             lastNameLabel.setText("");
+            phoneNumberLabel.setText("");
             streetLabel.setText("");
-            postalCodeLabel.setText("");
+            mailLabel.setText("");
             cityLabel.setText("");
             birthdayLabel.setText("");
         }
@@ -151,4 +169,5 @@ public class PersonOverviewController {
             alert.showAndWait();
         }
     }
+
 }

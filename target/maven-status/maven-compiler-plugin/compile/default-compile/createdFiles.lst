@@ -1,8 +1,0 @@
-address\view\PersonOverviewController.class
-address\util\DateUtil.class
-address\view\RootLayoutController.class
-address\MainApp.class
-address\model\Person.class
-address\util\LocalDateAdapter.class
-address\view\PersonEditDialogController.class
-address\model\PersonListWrapper.class

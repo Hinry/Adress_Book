@@ -25,7 +25,9 @@ public class PersonEditDialogController {
     @FXML
     private TextField streetField;
     @FXML
-    private TextField postalCodeField;
+    private TextField phoneNumberField;
+    @FXML
+    private TextField mailField;
     @FXML
     private TextField cityField;
     @FXML
@@ -63,8 +65,9 @@ public class PersonEditDialogController {
 
         firstNameField.setText(person.getFirstName());
         lastNameField.setText(person.getLastName());
+        phoneNumberField.setText(person.getPhoneNumber());
         streetField.setText(person.getStreet());
-        postalCodeField.setText(Integer.toString(person.getPostalCode()));
+        mailField.setText(person.getMail());
         cityField.setText(person.getCity());
         birthdayField.setText(DateUtil.format(person.getBirthday()));
         birthdayField.setPromptText("dd.mm.yyyy");
@@ -87,8 +90,9 @@ public class PersonEditDialogController {
         if (isInputValid()) {
             person.setFirstName(firstNameField.getText());
             person.setLastName(lastNameField.getText());
+            person.setPhoneNumber(phoneNumberField.getText());
             person.setStreet(streetField.getText());
-            person.setPostalCode(Integer.parseInt(postalCodeField.getText()));
+            person.setMail(mailField.getText());
             person.setCity(cityField.getText());
             person.setBirthday(DateUtil.parse(birthdayField.getText()));
 
@@ -122,16 +126,12 @@ public class PersonEditDialogController {
         if (streetField.getText() == null || streetField.getText().length() == 0) {
             errorMessage += "Улица не действительна!\n";
         }
+        if (phoneNumberField.getText() == null || phoneNumberField.getText().length() == 0) {
+            errorMessage += "Номер не действителен!\n";
+        }
 
-        if (postalCodeField.getText() == null || postalCodeField.getText().length() == 0) {
-            errorMessage += "Почтовый индекс не действителен!\n";
-        } else {
-            // пытаемся преобразовать почтовый код в int.
-            try {
-                Integer.parseInt(postalCodeField.getText());
-            } catch (NumberFormatException e) {
-                errorMessage += "Почтовый код не действителен(введите только цифры)!\n";
-            }
+        if (mailField.getText() == null || mailField.getText().length() == 0) {
+            errorMessage += "Почта не действителена!\n";
         }
 
         if (cityField.getText() == null || cityField.getText().length() == 0) {

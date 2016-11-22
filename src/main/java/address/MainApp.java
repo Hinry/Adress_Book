@@ -39,15 +39,15 @@ public class MainApp extends Application {
      */
     public MainApp() {
         // В качестве образца добавляем некоторые данные
-        personData.add(new Person("Hans", "Muster"));
-        personData.add(new Person("Ruth", "Mueller"));
-        personData.add(new Person("Heinz", "Kurz"));
-        personData.add(new Person("Cornelia", "Meier"));
-        personData.add(new Person("Werner", "Meyer"));
-        personData.add(new Person("Lydia", "Kunz"));
-        personData.add(new Person("Anna", "Best"));
-        personData.add(new Person("Stefan", "Meier"));
-        personData.add(new Person("Martin", "Mueller"));
+        personData.add(new Person("Вася", "Петичкин"));
+        personData.add(new Person("Игорь", "Коновалов"));
+        personData.add(new Person("Петя", "Васичкин"));
+        personData.add(new Person("Алиса", "Чудесная"));
+        personData.add(new Person("Владимир", "Гринин"));
+        personData.add(new Person("Антон", "Городецкий"));
+        personData.add(new Person("Филип", "Киркоров"));
+        personData.add(new Person("Britney", "Spears"));
+        personData.add(new Person("Martin", "Luter"));
     }
 
     /**
@@ -68,7 +68,7 @@ public class MainApp extends Application {
 
         showPersonOverview();
     }
-    
+
     /**
      * Инициализация главного окна.
      */
@@ -141,6 +141,7 @@ public class MainApp extends Application {
             // Создаём диалоговое окно Stage.
             Stage dialogStage = new Stage();
             dialogStage.setTitle("Редактировать контакт");
+            dialogStage.getIcons().add(new Image("/images/edit.png"));
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(primaryStage);
             Scene scene = new Scene(page);
