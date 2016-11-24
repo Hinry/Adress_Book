@@ -79,12 +79,7 @@ public class PersonOverviewController {
         countContacts.setText(""+mainApp.getPersonData().size());
         // Добавление в таблицу данных из наблюдаемого списка
         personTable.setItems(mainApp.getPersonData());
-        mainApp.getPersonData().addListener(new ListChangeListener<Person>() {
-            @Override
-            public void onChanged(Change<? extends Person> c) {
-                countContacts.setText(""+mainApp.getPersonData().size());
-            }
-        });
+        mainApp.getPersonData().addListener((ListChangeListener<Person>) c -> countContacts.setText(""+mainApp.getPersonData().size()));
     }
 
 

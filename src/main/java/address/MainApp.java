@@ -5,6 +5,7 @@ import address.model.PersonListWrapper;
 import address.view.PersonEditDialogController;
 import address.view.PersonOverviewController;
 import address.view.RootLayoutController;
+import com.google.gson.Gson;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,19 +17,22 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.hildan.fxgson.FxGson;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 public class MainApp extends Application {
 
-    private Stage primaryStage;
-    private BorderPane rootLayout;
+    transient private Stage primaryStage;
+    transient private BorderPane rootLayout;
     /**
      * Данные, в виде наблюдаемого списка адресатов.
      */
@@ -38,6 +42,10 @@ public class MainApp extends Application {
      * Конструктор
      */
     public MainApp() {
+
+    }
+
+    public void adData(){
         // В качестве образца добавляем некоторые данные
         personData.add(new Person("Вася", "Петичкин"));
         personData.add(new Person("Игорь", "Коновалов"));
@@ -48,7 +56,10 @@ public class MainApp extends Application {
         personData.add(new Person("Филип", "Киркоров"));
         personData.add(new Person("Britney", "Spears"));
         personData.add(new Person("Martin", "Luter"));
+
     }
+
+
 
     /**
      * Возвращает данные в виде наблюдаемого списка адресатов.
@@ -59,7 +70,7 @@ public class MainApp extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IOException {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Адресная книга");
         this.primaryStage.getIcons().add(new Image("/images/adrbook.png"));
@@ -72,7 +83,7 @@ public class MainApp extends Application {
     /**
      * Инициализация главного окна.
      */
-    public void initRootLayout() {
+    public void initRootLayout() throws IOException {
         try {
             // Загружаем корневой макет из fxml файла.
             FXMLLoader loader = new FXMLLoader();
@@ -96,7 +107,13 @@ public class MainApp extends Application {
         // Пытается загрузить последний открытый файл с адресатами.
         File file = getPersonFilePath();
         if (file != null) {
-            loadPersonDataFromFile(file);
+            if (file.getPath().endsWith(".xml")){
+                loadPersonDataFromFile(file);
+            }
+            if (file.getPath().endsWith(".json")){
+                loadPersonDataFromJSON(file);
+            }
+
         }
     }
 
@@ -268,5 +285,50 @@ public class MainApp extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public void savePersonDataToJSON(File file) {
+        // Обёртываем наши данные об адресатах.
+        //PersonListWrapper wrapper = new PersonListWrapper();
+        //wrapper.setPersons(personData);
+        Gson gson = FxGson.coreBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+
+        String string = gson.toJson(MainApp.this);
+        try (FileWriter fileWriter = new FileWriter(file)) {
+            fileWriter.write(string);
+        } catch (IOException ex) {
+            Logger.getLogger(MainApp.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public void loadPersonDataFromJSON(File file) throws IOException {
+        FxGson gson2 = new FxGson();
+
+        try {
+            OutputStream out = null;
+            InputStream in = null;
+            in  = new FileInputStream(file);
+            byte[] buf = new byte[in.available()];
+            int readed = in.read(buf);
+            StringBuilder sb = new StringBuilder();
+            while ( readed > 0){
+                sb.append(new String(buf,0,readed));
+                readed = in.read(buf);
+            }
+            // записываем из буфера в файл
+            MainApp object;
+            object = gson2.create().fromJson(sb.toString(), MainApp.class);
+            ObservableList<Person> per = FXCollections.observableArrayList();
+            per.addAll(object.getPersonData());
+            personData.clear();
+            personData.addAll(per);
+            setPersonFilePath(file);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MainApp.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+
     }
 }

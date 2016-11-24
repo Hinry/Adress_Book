@@ -3,6 +3,7 @@ package address.model;
 /**
  * Created by mrhri on 16.11.2016.
  */
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -19,7 +20,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 @XmlSeeAlso(value = Person.class)
 public class PersonListWrapper {
     private List persons;
-    
+
     @XmlElement(name = "person")
     public List getPersons() {
         return persons;

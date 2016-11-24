@@ -4,6 +4,7 @@ package address.view;
  * Created by mrhri on 16.11.2016.
  */
 import java.io.File;
+import java.io.IOException;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -44,19 +45,28 @@ public class RootLayoutController {
      * выбрать адресную книгу для загрузки.
      */
     @FXML
-    private void handleOpen() {
+    private void handleOpen() throws IOException {
         FileChooser fileChooser = new FileChooser();
 
         // Задаём фильтр расширений
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
                 "XML files (*.xml)", "*.xml");
+        FileChooser.ExtensionFilter extFilter2 = new FileChooser.ExtensionFilter(
+                "JSON files (*.json)", "*.json");
         fileChooser.getExtensionFilters().add(extFilter);
+        fileChooser.getExtensionFilters().add(extFilter2);
 
         // Показываем диалог загрузки файла
         File file = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
 
         if (file != null) {
-            mainApp.loadPersonDataFromFile(file);
+            if(file.getPath().endsWith(".xml")){
+                mainApp.loadPersonDataFromFile(file);
+            }
+            if(file.getPath().endsWith(".json")){
+                mainApp.loadPersonDataFromJSON(file);
+            }
+
         }
     }
 
@@ -68,9 +78,15 @@ public class RootLayoutController {
     private void handleSave() {
         File personFile = mainApp.getPersonFilePath();
         if (personFile != null) {
-            mainApp.savePersonDataToFile(personFile);
+            if (personFile.getPath().endsWith(".xml")){
+                mainApp.savePersonDataToFile(personFile);
+            }
+            if(personFile.getPath().endsWith(".json")){
+                mainApp.savePersonDataToJSON(personFile);
+            }
+
         } else {
-            handleSaveAs();
+            SaveAsXML();
         }
     }
 
@@ -79,9 +95,9 @@ public class RootLayoutController {
      * выбрать файл, куда будут сохранены данные
      */
     @FXML
-    private void handleSaveAs() {
-        FileChooser fileChooser = new FileChooser();
+    private void SaveAsXML() {
 
+        FileChooser fileChooser = new FileChooser();
         // Задаём фильтр расширений
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
                 "XML files (*.xml)", "*.xml");
@@ -91,6 +107,17 @@ public class RootLayoutController {
         File file = fileChooser.showSaveDialog(mainApp.getPrimaryStage());
 
         mainApp.savePersonDataToFile(file);
+    }
+    @FXML
+    private void SaveAsJSON() {
+
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extensionFilter =
+                new FileChooser.ExtensionFilter("JSON filex (*.json)", "*.json");
+        fileChooser.getExtensionFilters().add(extensionFilter);
+        File file = fileChooser.showSaveDialog(mainApp.getPrimaryStage());
+
+        mainApp.savePersonDataToJSON(file);
     }
 
     /**
