@@ -50,7 +50,7 @@
                     <items>
                       <MenuItem mnemonicParsing="false" onAction="#SaveAsXML" text="В формате XML" />
                         <MenuItem mnemonicParsing="false" onAction="#SaveAsJSON" text="В формате JSON" />
-                        <MenuItem mnemonicParsing="false" text="В формате CSV" />
+                        <MenuItem mnemonicParsing="false" onAction="#SaveAsCSV" text="В формате CSV" />
                     </items>
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -60,7 +60,6 @@
                         </ImageView>
                      </graphic>
                   </Menu>
-                  <MenuItem mnemonicParsing="false" text="Сохранить как..." />
         <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Выход">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">

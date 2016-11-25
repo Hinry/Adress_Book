@@ -3,14 +3,14 @@ package address.view;
 /**
  * Created by mrhri on 16.11.2016.
  */
-import java.io.File;
-import java.io.IOException;
-
+import address.MainApp;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
-import address.MainApp;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Контроллер для корневого макета. Корневой макет предоставляет базовый
@@ -53,8 +53,11 @@ public class RootLayoutController {
                 "XML files (*.xml)", "*.xml");
         FileChooser.ExtensionFilter extFilter2 = new FileChooser.ExtensionFilter(
                 "JSON files (*.json)", "*.json");
+        FileChooser.ExtensionFilter extFilter3 = new FileChooser.ExtensionFilter(
+                "CSV file(*.csv)", "*.csv");
         fileChooser.getExtensionFilters().add(extFilter);
         fileChooser.getExtensionFilters().add(extFilter2);
+        fileChooser.getExtensionFilters().add(extFilter3);
 
         // Показываем диалог загрузки файла
         File file = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
@@ -66,6 +69,9 @@ public class RootLayoutController {
             if(file.getPath().endsWith(".json")){
                 mainApp.loadPersonDataFromJSON(file);
             }
+            if (file.getPath().endsWith(".csv")){
+                mainApp.loadPersonDataFromCSV(file);
+            }
 
         }
     }
@@ -75,14 +81,17 @@ public class RootLayoutController {
      * Если файл не открыт, то отображается диалог "save as".
      */
     @FXML
-    private void handleSave() {
+    private void handleSave() throws IOException {
         File personFile = mainApp.getPersonFilePath();
         if (personFile != null) {
-            if (personFile.getPath().endsWith(".xml")){
+            if(personFile.getPath().endsWith(".xml")){
                 mainApp.savePersonDataToFile(personFile);
             }
             if(personFile.getPath().endsWith(".json")){
                 mainApp.savePersonDataToJSON(personFile);
+            }
+            if(personFile.getPath().endsWith(".csv")){
+                mainApp.savePersonDataToCSV(personFile);
             }
 
         } else {
@@ -113,11 +122,21 @@ public class RootLayoutController {
 
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extensionFilter =
-                new FileChooser.ExtensionFilter("JSON filex (*.json)", "*.json");
+                new FileChooser.ExtensionFilter("JSON file (*.json)", "*.json");
         fileChooser.getExtensionFilters().add(extensionFilter);
         File file = fileChooser.showSaveDialog(mainApp.getPrimaryStage());
 
         mainApp.savePersonDataToJSON(file);
+    }
+    @FXML
+    private void SaveAsCSV() throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extensionFilter =
+                new FileChooser.ExtensionFilter("CSV file (*.csv)", "*.csv");
+        fileChooser.getExtensionFilters().add(extensionFilter);
+        File file = fileChooser.showSaveDialog(mainApp.getPrimaryStage());
+
+        mainApp.savePersonDataToCSV(file);
     }
 
     /**

@@ -6,6 +6,8 @@ import address.view.PersonEditDialogController;
 import address.view.PersonOverviewController;
 import address.view.RootLayoutController;
 import com.google.gson.Gson;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,6 +27,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -287,6 +290,10 @@ public class MainApp extends Application {
         launch(args);
     }
 
+    /**
+     * Сохраняет текущие контакты в формате JSON
+     *
+     */
     public void savePersonDataToJSON(File file) {
         // Обёртываем наши данные об адресатах.
         //PersonListWrapper wrapper = new PersonListWrapper();
@@ -302,12 +309,14 @@ public class MainApp extends Application {
         }
 
     }
-
+    /**
+     * Загружает контакты из файла JSON
+     *
+     */
     public void loadPersonDataFromJSON(File file) throws IOException {
         FxGson gson2 = new FxGson();
 
         try {
-            OutputStream out = null;
             InputStream in = null;
             in  = new FileInputStream(file);
             byte[] buf = new byte[in.available()];
@@ -329,6 +338,55 @@ public class MainApp extends Application {
             Logger.getLogger(MainApp.class.getName())
                     .log(Level.SEVERE, null, ex);
         }
+    }
+    /**
+     * Сохраняет текущие контакты в формате CSV
+     *
+     */
+    public void savePersonDataToCSV(File file) throws IOException {
+        CSVWriter writer = new CSVWriter(new FileWriter(file));
 
+        ArrayList<Person> persons = new ArrayList();
+        persons.addAll(getPersonData());
+
+        List<String[]> data = new ArrayList<>(persons.size());
+
+        String[][] persona = new String[persons.size()][6];
+
+        for(int i = 0; i <persons.size(); i++){
+            persona[i][0] = getPersonData().get(i).getFirstName();
+            persona[i][1] = getPersonData().get(i).getLastName();
+            persona[i][2] = getPersonData().get(i).getPhoneNumber();
+            persona[i][3] = getPersonData().get(i).getStreet();
+            persona[i][4] = getPersonData().get(i).getMail();
+            persona[i][5] = getPersonData().get(i).getCity();
+        }
+        for (int a = 0 ; a <persons.size();a++){
+            data.add(persona[a]);
+        }
+        writer.writeAll(data);
+        writer.close();
+    }
+    /**
+     * Загружает контакты из файла CSV
+     *
+     */
+    public void loadPersonDataFromCSV(File file) throws IOException {
+
+        //Очищаем текущий лист и добавляем в него прочитанные обьекты
+        personData.clear();
+        CSVReader csvReader = new CSVReader(new FileReader(file));
+        String[] nextLine;
+        while ((nextLine = csvReader.readNext()) != null) {
+            Person per = new Person();
+            per.setFirstName(nextLine[0]);
+            per.setLastName(nextLine[1]);
+            per.setPhoneNumber(nextLine[2]);
+            per.setMail(nextLine[3]);
+            per.setStreet(nextLine[4]);
+            per.setCity(nextLine[5]);
+            personData.add(per);
+        }
+        setPersonFilePath(file);
     }
 }
