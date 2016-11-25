@@ -26,6 +26,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -159,7 +160,7 @@ public class MainApp extends Application {
 
             // Создаём диалоговое окно Stage.
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("Редактировать контакт");
+            dialogStage.setTitle("Добавить / Редактировать контакт");
             dialogStage.getIcons().add(new Image("/images/edit.png"));
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(primaryStage);
@@ -351,7 +352,7 @@ public class MainApp extends Application {
 
         List<String[]> data = new ArrayList<>(persons.size());
 
-        String[][] persona = new String[persons.size()][6];
+        String[][] persona = new String[persons.size()][7];
 
         for(int i = 0; i <persons.size(); i++){
             persona[i][0] = getPersonData().get(i).getFirstName();
@@ -360,6 +361,7 @@ public class MainApp extends Application {
             persona[i][3] = getPersonData().get(i).getStreet();
             persona[i][4] = getPersonData().get(i).getMail();
             persona[i][5] = getPersonData().get(i).getCity();
+            persona[i][6] = getPersonData().get(i).getBirthday().toString();
         }
         for (int a = 0 ; a <persons.size();a++){
             data.add(persona[a]);
@@ -385,6 +387,7 @@ public class MainApp extends Application {
             per.setMail(nextLine[3]);
             per.setStreet(nextLine[4]);
             per.setCity(nextLine[5]);
+            per.setBirthday(LocalDate.parse(nextLine[6]));
             personData.add(per);
         }
         setPersonFilePath(file);
